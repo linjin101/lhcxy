@@ -24,7 +24,7 @@ okx u本位择时策略实盘框架
 """
 
 from core.strategy_template import StrategyTemplate
-from core.signal_types import BUY, SELL, OPEN_LONG, OPEN_SHORT
+from core.signal_types import BUY, SELL, OPEN_LONG, OPEN_SHORT, CLOSE_LONG, CLOSE_SHORT
 import pandas as pd
 import numpy as np
 
@@ -53,10 +53,11 @@ class DualEMAStrategy(StrategyTemplate):
         # 获取策略参数
         self.fast_ema_period = config.get('fast_ema_period', 20)  # 快线EMA周期，默认20
         self.slow_ema_period = config.get('slow_ema_period', 60)  # 慢线EMA周期，默认60
+        self.trade_direction = config.get('trade_direction', 'both')  # 交易方向，默认双向交易
 
         # 记录策略信息
         self.logger.info(f"初始化双均线交叉策略，快线周期: {self.fast_ema_period}, "
-                         f"慢线周期: {self.slow_ema_period}")
+                         f"慢线周期: {self.slow_ema_period}, 交易方向: {self.trade_direction}")
 
     def calculate_indicators(self, df):
         """
@@ -89,14 +90,20 @@ class DualEMAStrategy(StrategyTemplate):
         生成交易信号
 
         策略逻辑：
-        - 快线从下方穿过慢线，开多信号（金叉）
-        - 快线从上方穿过慢线，开空信号（死叉）
+        - 快线从下方穿过慢线，根据交易方向生成信号（金叉）:
+          - 'only_long': OPEN_LONG
+          - 'only_short': CLOSE_SHORT
+          - 'both': OPEN_LONG
+        - 快线从上方穿过慢线，根据交易方向生成信号（死叉）:
+          - 'only_long': CLOSE_LONG
+          - 'only_short': OPEN_SHORT
+          - 'both': OPEN_SHORT
 
         Args:
             df: 包含技术指标的K线数据DataFrame
 
         Returns:
-            str: 交易信号，OPEN_LONG, OPEN_SHORT, None
+            str: 交易信号，OPEN_LONG, OPEN_SHORT, CLOSE_LONG, CLOSE_SHORT, None
         """
         if df is None or df.empty or 'fast_ema' not in df.columns or 'slow_ema' not in df.columns:
             return None
@@ -120,15 +127,35 @@ class DualEMAStrategy(StrategyTemplate):
         # 判断是否发生了均线交叉
         # 金叉：前前一根K线快线在慢线下方，前一根K线快线在慢线上方
         if prev_prev['fast_ema'] < prev_prev['slow_ema'] and prev['fast_ema'] > prev['slow_ema']:
-            self.logger.info(f"快线上穿慢线，生成开多信号，"
+            self.logger.info(f"快线上穿慢线，金叉信号，"
                              f"前快线:{prev['fast_ema']:.2f}，前慢线:{prev['slow_ema']:.2f}")
-            return OPEN_LONG
+            
+            # 根据交易方向生成信号
+            if self.trade_direction == 'only_long':
+                self.logger.info("金叉信号，交易方向为only_long，生成开多信号")
+                return OPEN_LONG
+            elif self.trade_direction == 'only_short':
+                self.logger.info("金叉信号，交易方向为only_short，生成平空信号")
+                return CLOSE_SHORT
+            else:  # 'both'
+                self.logger.info("金叉信号，交易方向为both，生成开多信号")
+                return OPEN_LONG
 
         # 死叉：前前一根K线快线在慢线上方，前一根K线快线在慢线下方
         elif prev_prev['fast_ema'] > prev_prev['slow_ema'] and prev['fast_ema'] < prev['slow_ema']:
-            self.logger.info(f"快线下穿慢线，生成开空信号，"
+            self.logger.info(f"快线下穿慢线，死叉信号，"
                              f"前快线:{prev['fast_ema']:.2f}，前慢线:{prev['slow_ema']:.2f}")
-            return OPEN_SHORT
+            
+            # 根据交易方向生成信号
+            if self.trade_direction == 'only_long':
+                self.logger.info("死叉信号，交易方向为only_long，生成平多信号")
+                return CLOSE_LONG
+            elif self.trade_direction == 'only_short':
+                self.logger.info("死叉信号，交易方向为only_short，生成开空信号")
+                return OPEN_SHORT
+            else:  # 'both'
+                self.logger.info("死叉信号，交易方向为both，生成开空信号")
+                return OPEN_SHORT
 
         # 无穿越，无信号
         return None

@@ -1,14 +1,4 @@
 config/
 *.pyc
 logs/
-
-# Environments
-.env
-.venv
-.venv1
-env/
-venv/
-venv1/
-ENV/
-env.bak/
-venv.bak/
+data/
