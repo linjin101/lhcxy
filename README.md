@@ -71,12 +71,7 @@ pip install -r requirements.txt
 
 ### 运行系统
 
-1. 查看可用策略：
-```bash
-python main.py --list
-```
-
-2. 运行交易系统：
+1. 运行交易系统：
 ```bash
 python main.py
 ```
@@ -143,9 +138,9 @@ trading_config['strategy'] = 'bollinger_bands_strategy'
 每个策略都有其特定的配置选项，通常以`策略名_config`命名，例如：
 
 ```python
-bollinger_bands_strategy_config = {
-    'bb_period': 20,       # 布林带周期
-    'bb_std': 2.0,         # 标准差倍数
-    'trade_mode': 'mean_reversion',  # 交易模式
+# EMA策略参数 (ema_strategy)
+dual_ema_strategy_config = {
+    'fast_ema_period': 20,
+    'slow_ema_period': 60
 }
 ```

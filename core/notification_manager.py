@@ -313,7 +313,7 @@ class NotificationManager:
             content: 消息内容
             
         Returns:
-            bool: 是否成功发送到任一渠道
+            bool: 发送是否成功
         """
         if not self.enabled:
             return False
@@ -325,6 +325,28 @@ class NotificationManager:
             wechat_success = self.wechat.send_text(content)
             success = success or wechat_success
             
+        return success
+    
+    def send_text_to_url(self, content: str, webhook_url: str) -> bool:
+        """
+        发送纯文本消息到指定的仓位 webhook URL
+        
+        Args:
+            content: 消息内容
+            webhook_url: 指定的webhook URL
+            
+        Returns:
+            bool: 发送是否成功
+        """
+
+        if not webhook_url:
+            self.logger.warning("webhook URL未提供，使用默认URL发送")
+            return self.send_text(content)
+
+        # 创建临时通知器发送消息
+        temp_notifier = WeChatNotifier(webhook_url, enabled=True)
+        success = temp_notifier.send_text(content)
+        self.logger.info(f"使用指定仓位 webhook URL发送消息{'成功' if success else '失败'}")
         return success
     
     def send_trade_signal(self, strategy_name: str, symbol: str, signal: str, price: float, additional_info: str = "") -> bool:

@@ -1,6 +1,6 @@
 # OKX Quantitative Trading Framework Dependencies
 # Core Dependencies
-ccxt==2.2.40               # Cryptocurrency exchange trading library
+ccxt==4.4.77               # Cryptocurrency exchange trading library
 pandas==2.2.3              # Data analysis and manipulation
 numpy==2.2.5               # Numerical computing
 requests==2.32.3           # HTTP requests

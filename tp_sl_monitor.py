@@ -30,8 +30,8 @@ import datetime
 from typing import Dict, List, Optional, Tuple
 
 # 导入配置和工具模块
-from config.config import position_config, symbol_position_config, notification_config, trading_config
-from config.tp_sl_config import monitor_config, global_tp_sl_rules, position_report_config
+from config.config import position_config, symbol_position_config, notification_config, trading_config, position_report_config
+from config.tp_sl_config import monitor_config, global_tp_sl_rules
 from config.api_keys import api_config
 from core.trader import OkxTrader
 from core.position_tracker import PositionTracker
@@ -79,8 +79,9 @@ class TpSlMonitor:
         
         # 持仓报告相关配置
         self.position_report_enabled = position_report_config.get('enabled', False)
-        self.position_report_interval = position_report_config.get('interval', 3600)  # 默认1小时
+        self.position_report_interval = position_report_config.get('interval', 120)  # 默认120s
         self.position_report_detail = position_report_config.get('detail_level', 'normal')
+
         self.last_report_time = 0  # 上次发送报告的时间戳
         self.last_report_balance = 0  # 上次报告时的账户余额
         self.schedule_hours = position_report_config.get('schedule_hours', [])
@@ -522,8 +523,16 @@ class TpSlMonitor:
             self.last_report_time = current_time
             self.last_report_balance = current_balance
             
+            # 获取持仓报告专用webhook URL
+            position_report_webhook = position_report_config.get('webhook_url', '')
+
             # 发送报告
-            success = self.notification.send_text(report_content)
+            if position_report_webhook:
+                self.logger.info("使用专用仓位 webhook URL发送持仓报告")
+                success = self.notification.send_text_to_url(report_content, position_report_webhook)
+            else:
+                self.logger.info("使用默认webhook URL发送持仓报告")
+                success = self.notification.send_text(report_content)
             
             if success:
                 self.logger.info("持仓报告发送成功")
