@@ -1,0 +1,14 @@
+# OKX Quantitative Trading Framework Dependencies
+# Core Dependencies
+ccxt==2.2.40               # Cryptocurrency exchange trading library
+pandas==2.2.3              # Data analysis and manipulation
+numpy==2.2.5               # Numerical computing
+requests==2.32.3           # HTTP requests
+PyYAML==6.0.2              # YAML parser and emitter
+loguru==0.7.3              # Logging library
+python-dateutil==2.9.0.post0  # Extensions to the standard datetime module
+
+# Technical Analysis
+pandas_ta==0.3.14b0        # Technical analysis indicators
+ta-lib==0.6.3              # Technical analysis library
+
