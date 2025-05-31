@@ -42,6 +42,8 @@ STRATEGY_MAPPING = {
     'sar_ema_strategy': ('strategies.examples.sar_ema_strategy', 'SarEmaStrategy', 'sar_ema_strategy_config'),
     'sar_strategy': ('strategies.examples.sar_strategy', 'SarStrategy', 'sar_strategy_config'),
     'dual_ema_strategy': ('strategies.examples.dual_ema_strategy', 'DualEMAStrategy', 'dual_ema_strategy_config'),
+    'dc_strategy': ('strategies.examples.dc_strategy', 'DCStrategy', 'dc_strategy_config'),
+
 }
 
 def get_strategy_class(strategy_name):
