@@ -739,3 +739,27 @@ class OkxTrader:
             raise ValueError("当前持仓模式不是双向持仓模式，程序已停止运行。请去官网改为双向持仓。")
         else:
             print('当前持仓模式：双向持仓')
+
+    @retry(max_retries=3, base_delay=3.0)
+    def fetch_market_tickers(self, instType='SWAP'):
+        """获取获取所有产品行情信息"""
+        try:
+            tickers = self.exchange.publicGetMarketTickers({"instType": instType})
+            return tickers['data']
+        except Exception as e:
+            self.logger.error(f"获取所有行情数据失败: {str(e)}")
+            raise
+
+    @retry(max_retries=3, base_delay=3.0)
+    def get_instruments(self, instType='SWAP'):
+        """
+        获取所有合约信息
+        Returns:
+            list: 所有合约信息的列表
+        """
+        # 使用OKX API获取合约信息
+        params = {
+            'instType': instType
+        }
+        instruments = self.exchange.private_get_account_instruments(params)
+        return instruments['data']
