@@ -40,8 +40,9 @@ def run_coin_selector():
     logger.info(f"OKX量化交易框架 - 选币策略独立运行")
     logger.info(f"启动时间: {local_time.strftime('%Y-%m-%d %H:%M:%S')} ({tz_name})")
     logger.info(f"选币时间周期: {coin_selector_strategy_config.get('timeframe', '4h')}")
-    logger.info(f"选币模式: {coin_selector_strategy_config.get('selection_mode', 'comprehensive')}")
+    logger.info(f"选币模式: {coin_selector_strategy_config.get('selection_mode', 'trend')}")
     logger.info(f"选币数量: {coin_selector_strategy_config.get('num_coins', 5)}")
+    logger.info(f"最小24h交易量(美元): {coin_selector_strategy_config.get('min_volume_usd', 10000000)}")
 
     # 获取调度配置
     schedule_hours = coin_selector_strategy_config.get('schedule_hours', [])
