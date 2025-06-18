@@ -30,7 +30,7 @@ global_tp_sl_rules = {
 # 持仓报告配置
 position_report_config = {
     'enabled': True,                # 是否启用定期持仓报告
-    'interval': 120,               # 报告间隔时间（秒），3600=1小时，300=5分钟
+    'interval': 900,               # 报告间隔时间（秒），3600=1小时，300=5分钟
     'detail_level': 'detailed',       # 报告详细程度：'brief'=简略, 'normal'=普通, 'detailed'=详细
     'include_small_positions': True, # 是否包含小额持仓（相对于总资产）
     'schedule_hours': [],           # 指定每天的固定时间发送报告，空列表表示按interval发送,例如[9,12,15,18,21]表示这几个整点发送
