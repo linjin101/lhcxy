@@ -43,6 +43,8 @@ STRATEGY_MAPPING = {
     'sar_strategy': ('strategies.examples.sar_strategy', 'SarStrategy', 'sar_strategy_config'),
     'dual_ema_strategy': ('strategies.examples.dual_ema_strategy', 'DualEMAStrategy', 'dual_ema_strategy_config'),
     'dc_strategy': ('strategies.examples.dc_strategy', 'DCStrategy', 'dc_strategy_config'),
+    # 新增MA策略
+    'dual_ma_strategy': ('strategies.examples.dual_ma_strategy', 'DualMAStrategy', 'dual_ma_strategy_config'),
 
 }
 

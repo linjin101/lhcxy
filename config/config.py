@@ -10,8 +10,8 @@ API密钥配置已移至api_keys.py文件
 trading_config = {
     'account_alias':'量化机器人_1号', # 账户的昵称
     'symbol': 'VIRTUAL-USDT-SWAP',  # 交易对
-    'strategy': 'dc_strategy',     # 策略名称
-    'timeframe': '15m',         # K线时间周期
+    'strategy': 'dual_ema_strategy',     # 策略名称
+    'timeframe': '30m',         # K线时间周期
     'leverage': 1,              # 杠杆倍数
     'amount': 1,             # 固定仓位大小
     'use_dynamic_position': True,  # 是否使用动态仓位
@@ -55,9 +55,16 @@ ema_strategy_config = {
 
 # EMA策略参数 (ema_strategy)
 dual_ema_strategy_config = {
-    'fast_ema_period': 20,
-    'slow_ema_period': 60,
-    'trade_direction': 'only_short'  # 交易方向，可选值: 'both', 'only_long', 'only_short'
+    'fast_ema_period': 5,
+    'slow_ema_period': 10,
+    'trade_direction': 'both'  # 交易方向，可选值: 'both', 'only_long', 'only_short'
+}
+
+# MA策略参数 (ema_strategy)
+dual_ma_strategy_config = {
+    'fast_period': 5,
+    'slow_period': 10,
+    'trade_direction': 'both'  # 交易方向，可选值: 'both', 'only_long', 'only_short'
 }
 
 # sar+ema 策略

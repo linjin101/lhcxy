@@ -21,8 +21,8 @@ monitor_config = {
 global_tp_sl_rules = {
     'enable_take_profit': True,   # 是否启用止盈
     'enable_stop_loss': True,     # 是否启用止损
-    'take_profit_percentage': 10.0,  # 止盈百分比
-    'stop_loss_percentage': 10.0,    # 止损百分比
+    'take_profit_percentage': 100.0,  # 止盈百分比
+    'stop_loss_percentage': 3.0,    # 止损百分比
     'close_percentage': 100,        # 触发时平仓百分比 (100表示全部平仓)
 }
 
