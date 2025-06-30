@@ -9,7 +9,7 @@ API密钥配置已移至api_keys.py文件
 # 交易配置（通用）
 trading_config = {
     'account_alias':'量化机器人_1号', # 账户的昵称
-    'symbol': 'LPTLPT-USDT-SWAP',  # 交易对
+    'symbol': 'LPT-USDT-SWAP',  # 交易对
     'strategy': 'sar_strategy',     # 策略名称
     'timeframe': '15m',         # K线时间周期
     'leverage': 1,              # 杠杆倍数
