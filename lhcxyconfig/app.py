@@ -49,6 +49,7 @@ HTML_TEMPLATE = """
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>多配置更新工具</title>
+    <link rel="icon" type="image/x-icon" href="https://sanhu918.com/images/favicon.ico">
     <style>
         * {
             box-sizing: border-box;
