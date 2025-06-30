@@ -23,41 +23,41 @@ def require_login():
 
 
 # 配置文件配置
-CONFIGS = {
-    'config1': {
-        'path': 'C:/work/lhcxy/lhcxy/config/config.py',
-        'pm2_cmd': ['pm2', 'restart', '1', '2'],
-        'display': '配置1'
-    },
-    'config2': {
-        'path': 'C:/work/lhcxy/lhcxy2/config/config.py',
-        'pm2_cmd': ['pm2', 'restart', '3', '4'],
-        'display': '配置2'
-    },
-    'config3': {
-        'path': 'C:/work/lhcxy/lhcxy3/config/config.py',
-        'pm2_cmd': ['pm2', 'restart', '5', '6'],
-        'display': '配置3'
-    }
-}
-
 # CONFIGS = {
 #     'config1': {
-#         'path': '/root/lhcxy/config/config.py',
+#         'path': 'C:/work/lhcxy/lhcxy/config/config.py',
 #         'pm2_cmd': ['pm2', 'restart', '1', '2'],
 #         'display': '配置1'
 #     },
 #     'config2': {
-#         'path': '/root/lhcxy2/config/config.py',
+#         'path': 'C:/work/lhcxy/lhcxy2/config/config.py',
 #         'pm2_cmd': ['pm2', 'restart', '3', '4'],
 #         'display': '配置2'
 #     },
 #     'config3': {
-#         'path': '/root/lhcxy3/config/config.py',
+#         'path': 'C:/work/lhcxy/lhcxy3/config/config.py',
 #         'pm2_cmd': ['pm2', 'restart', '5', '6'],
 #         'display': '配置3'
 #     }
 # }
+
+CONFIGS = {
+    'config1': {
+        'path': '/root/lhcxy/config/config.py',
+        'pm2_cmd': ['pm2', 'restart', '1', '2'],
+        'display': '配置1'
+    },
+    'config2': {
+        'path': '/root/lhcxy2/config/config.py',
+        'pm2_cmd': ['pm2', 'restart', '3', '4'],
+        'display': '配置2'
+    },
+    'config3': {
+        'path': '/root/lhcxy3/config/config.py',
+        'pm2_cmd': ['pm2', 'restart', '5', '6'],
+        'display': '配置3'
+    }
+}
 
 # HTML模板 - 针对移动设备优化
 HTML_TEMPLATE = """
