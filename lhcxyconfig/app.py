@@ -25,21 +25,39 @@ def require_login():
 # 配置文件配置
 CONFIGS = {
     'config1': {
-        'path': '/root/lhcxy/config/config.py',
+        'path': 'C:/work/lhcxy/lhcxy/config/config.py',
         'pm2_cmd': ['pm2', 'restart', '1', '2'],
         'display': '配置1'
     },
     'config2': {
-        'path': '/root/lhcxy2/config/config.py',
+        'path': 'C:/work/lhcxy/lhcxy2/config/config.py',
         'pm2_cmd': ['pm2', 'restart', '3', '4'],
         'display': '配置2'
     },
     'config3': {
-        'path': '/root/lhcxy3/config/config.py',
+        'path': 'C:/work/lhcxy/lhcxy3/config/config.py',
         'pm2_cmd': ['pm2', 'restart', '5', '6'],
         'display': '配置3'
     }
 }
+
+# CONFIGS = {
+#     'config1': {
+#         'path': '/root/lhcxy/config/config.py',
+#         'pm2_cmd': ['pm2', 'restart', '1', '2'],
+#         'display': '配置1'
+#     },
+#     'config2': {
+#         'path': '/root/lhcxy2/config/config.py',
+#         'pm2_cmd': ['pm2', 'restart', '3', '4'],
+#         'display': '配置2'
+#     },
+#     'config3': {
+#         'path': '/root/lhcxy3/config/config.py',
+#         'pm2_cmd': ['pm2', 'restart', '5', '6'],
+#         'display': '配置3'
+#     }
+# }
 
 # HTML模板 - 针对移动设备优化
 HTML_TEMPLATE = """
@@ -248,13 +266,17 @@ HTML_TEMPLATE = """
         // 当选择配置变化时，更新当前交易对显示
         document.getElementById('config').addEventListener('change', function() {
             const configId = this.value;
+            
+            // 获取选中项的显示文本
+            const selectedText = this.options[this.selectedIndex].text.trim();
+
             if (configId) {
                 fetch('/get-symbol?config=' + configId)
                     .then(response => response.json())
                     .then(data => {
                         const display = document.getElementById('symbolDisplay');
                         if (data.success) {
-                            display.innerHTML = `当前交易对: ${data.symbol}`;
+                            display.innerHTML = selectedText + `当前交易对: ${data.symbol}`;
                             display.style.display = 'block';
                         } else {
                             display.innerHTML = `错误: ${data.error}`;
@@ -285,7 +307,8 @@ def get_symbol_from_config(config_path):
         if not os.path.exists(config_path):
             return False, f"配置文件不存在: {config_path}", None
 
-        with open(config_path, 'r') as f:
+        # 修改这里：添加 encoding='utf-8' 参数
+        with open(config_path, 'r', encoding='utf-8') as f:
             content = f.read()
 
         # 使用正则表达式匹配symbol值 - 修改为匹配任意长度的大写字母
@@ -322,7 +345,7 @@ def update_config(config_id, new_symbol):
         if not os.path.exists(config_path):
             return False, f"配置文件不存在: {config_path}", ""
 
-        with open(config_path, 'r') as f:
+        with open(config_path, 'r', encoding='utf-8') as f:
             content = f.read()
 
         # 替换配置值 - 修改为匹配任意长度的大写字母
@@ -339,7 +362,7 @@ def update_config(config_id, new_symbol):
             return False, "未找到可替换的配置项", ""
 
         # 写回配置文件
-        with open(config_path, 'w') as f:
+        with open(config_path, 'w', encoding='utf-8') as f:
             f.write(new_content)
 
         # 执行PM2重启命令
