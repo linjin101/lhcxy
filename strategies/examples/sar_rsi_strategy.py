@@ -14,10 +14,9 @@ okx u本位择时策略实盘框架
 """
 
 """
-SAR+EMA20策略
+SAR 策略
 
-这是一个基于抛物线转向指标(SAR)和指数移动平均线(EMA)的纯多头策略：
-- 使用EMA 20确定大趋势方向，只在价格位于EMA 20之上时做多
+这是一个基于抛物线转向指标(SAR)的纯多头策略：
 - 当SAR从价格上方翻转到下方时买入
 - 当SAR从价格下方翻转到上方时卖出
 """
@@ -28,15 +27,15 @@ import pandas as pd
 import numpy as np
 
 
-class SarEmaXStrategy(StrategyTemplate):
+class SarStrategy(StrategyTemplate):
     """
-    SAR+EMA20纯多头策略
+    SAR策略
 
-    使用EMA 00作为趋势过滤器，并使用SAR指标生成入场和出场信号
-    - 价格在EMA 20上方，SAR从上穿下，产生做多信号
-    - SAR从下穿上，产生平多信号
+    使用SAR指标生成入场和出场信号
+    - SAR从上穿下，产生做多信号
+    - SAR从下穿上，产生做空信号
 
-    SAR指标适合跟踪趋势性行情，EMA 20过滤掉大部分弱趋势市场
+    SAR指标适合跟踪趋势性行情
     """
 
     def __init__(self, trader, config):
@@ -50,18 +49,17 @@ class SarEmaXStrategy(StrategyTemplate):
         super().__init__(trader, config)
 
         # 获取策略参数
-        self.ema_period = config.get('ema_period', 20)  # EMA周期，默认20
         self.sar_acceleration = config.get('sar_acceleration', 0.02)  # SAR加速因子，默认0.02
         self.sar_maximum = config.get('sar_maximum', 0.2)  # SAR最大步长，默认0.2
 
         # 记录策略信息
-        self.logger.info(f"初始化SAR+EMA20策略，EMA周期: {self.ema_period}, "
+        self.logger.info(f"初始化SAR策略，"
                          f"SAR加速因子: {self.sar_acceleration}, SAR最大步长: {self.sar_maximum}, "
                          )
 
     def calculate_indicators(self, df):
         """
-        计算技术指标：SAR和EMA 20
+        计算技术指标：SAR
 
         Args:
             df: K线数据DataFrame
@@ -69,15 +67,13 @@ class SarEmaXStrategy(StrategyTemplate):
         Returns:
             添加了技术指标的DataFrame
         """
-        if df is None or df.empty or len(df) < self.ema_period:
-            self.logger.warning(f"数据不足，无法计算{self.ema_period}周期EMA")
+        if df is None or df.empty or len(df) < 20:
+            self.logger.warning(f"数据不足，无法计算周期")
             return df
 
         # 复制DataFrame避免修改原始数据
         indicators_df = df.copy()
 
-        # 计算指数移动平均线
-        indicators_df['ema20'] = indicators_df['close'].ewm(span=self.ema_period, adjust=False).mean()
 
         # 计算SAR指标
         try:
@@ -154,7 +150,7 @@ class SarEmaXStrategy(StrategyTemplate):
             self.logger.error(f"计算SAR指标时出错: {e}")
             return df
 
-        self.logger.info(f"计算完成SAR和EMA20指标")
+        self.logger.info(f"计算完成SAR指标")
         return indicators_df
 
     def generate_signals(self, df):
@@ -162,7 +158,7 @@ class SarEmaXStrategy(StrategyTemplate):
         生成交易信号
 
         策略逻辑：
-        - 价格在EMA 20上方，SAR从上方翻转到下方(sar_is_uptrend从False变为True)，买入信号
+        - SAR从上方翻转到下方(sar_is_uptrend从False变为True)，买入信号
         - SAR从下方翻转到上方(sar_is_uptrend从True变为False)，卖出信号
 
         Args:
@@ -171,7 +167,7 @@ class SarEmaXStrategy(StrategyTemplate):
         Returns:
             str: 交易信号，BUY, SELL, None
         """
-        if df is None or df.empty or 'ema20' not in df.columns or 'sar_is_uptrend' not in df.columns:
+        if df is None or df.empty  or 'sar_is_uptrend' not in df.columns:
             return None
 
         # 确保有足够的数据
@@ -188,8 +184,6 @@ class SarEmaXStrategy(StrategyTemplate):
         # 由False变为True意味着SAR从价格上方翻转到下方（做多信号）
         # 由True变为False意味着SAR从价格下方翻转到上方（平多信号）
 
-        # 判断趋势翻转情况和EMA 20趋势
-        price_above_ema = prev['close'] > prev['ema20']  # 价格是否在EMA 20上方
 
         # SAR从上方翻转到下方 (做多信号) - 通过sar_is_uptrend由False变为True判断
         sar_buy_signal = prev['sar_is_uptrend'] and not prev_prev['sar_is_uptrend']
@@ -197,17 +191,13 @@ class SarEmaXStrategy(StrategyTemplate):
         # SAR从下方翻转到上方 (平多信号) - 通过sar_is_uptrend由True变为False判断
         sar_sell_signal = not prev['sar_is_uptrend'] and prev_prev['sar_is_uptrend']
 
-        # 仅做多策略
-        # 买入条件：价格在EMA 20上方，且SAR从上方翻转到下方
-        if sar_buy_signal and price_above_ema:
-            self.logger.info(f"价格在EMA 20上方，SAR从上方翻转到下方，生成买入信号，"
-                                 f"前收盘价:{prev['close']}, EMA20:{prev['ema20']}, SAR:{prev['sar']}")
+        # 买入条件 :SAR从上方翻转到下方
+        if sar_buy_signal :
+            self.logger.info(f"SAR从上方翻转到下方，生成买入信号，"
+                                 f"前收盘价:{prev['close']},SAR:{prev['sar']}")
             return OPEN_LONG
 
         # 卖出条件：SAR从下方翻转到上方
         elif sar_sell_signal:
             self.logger.info(f"SAR从下方翻转到上方，生成卖出信号，前SAR:{prev['sar']}")
-            return CLOSE_LONG
-
-
-
+            return OPEN_SHORT

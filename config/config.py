@@ -9,9 +9,9 @@ API密钥配置已移至api_keys.py文件
 # 交易配置（通用）
 trading_config = {
     'account_alias':'量化机器人_1号', # 账户的昵称
-    'symbol': 'SOL-USDT-SWAP',  # 交易对
+    'symbol': 'UNI-USDT-SWAP',  # 交易对
     'strategy': 'sar_emax_strategy',     # 策略名称
-    'timeframe': '15m',         # K线时间周期
+    'timeframe': '5m',         # K线时间周期
     'leverage': 1,              # 杠杆倍数
     'amount': 1,             # 固定仓位大小
     'use_dynamic_position': True,  # 是否使用动态仓位
