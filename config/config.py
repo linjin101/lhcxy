@@ -76,7 +76,7 @@ sar_ema_strategy_config = {
 
 # sar+emax 策略
 sar_emax_strategy_config = {
-    'ema_period':60,
+    'ema_period':30,
     'sar_acceleration':0.02,
     'sar_maximum':0.2,
     'trade_direction': 'both'  # 交易方向，可选值: 'both', 'only_long', 'only_short'
