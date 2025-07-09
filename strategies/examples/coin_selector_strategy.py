@@ -298,7 +298,8 @@ class CoinSelectorStrategy(StrategyTemplate):
 
         # 获取24小时交易量并过滤低交易量币种
         volume_filtered = self.filter_by_volume(filtered_symbols)
-        self.logger.info(f"交易量过滤后剩余{len(volume_filtered)}个币种")
+        bfb = ( len(volume_filtered) / len(filtered_symbols) ) * 100
+        self.logger.info(f"合约总计{len(filtered_symbols)}个币种，交易量过滤后剩余{len(volume_filtered)}个币种,过滤后百分比{bfb}%")
 
         if not volume_filtered:
             self.logger.warning("过滤后没有符合条件的币种，返回空列表")

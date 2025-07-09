@@ -9,9 +9,9 @@ API密钥配置已移至api_keys.py文件
 # 交易配置（通用）
 trading_config = {
     'account_alias':'量化机器人_1号', # 账户的昵称
-    'symbol': 'UNI-USDT-SWAP',  # 交易对
-    'strategy': 'sar_emax_strategy',     # 策略名称
-    'timeframe': '5m',         # K线时间周期
+    'symbol': '1INCH-USDT-SWAP',  # 交易对
+    'strategy': 'sar_emax_strategy',     # 策略名称 dc_strategy sar_emax_strategy sar_strategy ema_strategy
+    'timeframe': '15m',         # K线时间周期
     'leverage': 1,              # 杠杆倍数
     'amount': 1,             # 固定仓位大小
     'use_dynamic_position': True,  # 是否使用动态仓位
@@ -29,8 +29,8 @@ position_config = {
 
 dc_strategy_config ={
     'channel_period':20,
-    'use_middle_exit':False, #这个参数不要改，目前只支持False
-    'trade_direction':'both' # 交易方向，可选值: 'both', 'only_long', 'only_short'
+    'use_middle_exit':True, #这个参数不要改，目前只支持False
+    'trade_direction':'only_short' # 交易方向，可选值: 'both', 'only_long', 'only_short'
 }
 
 
@@ -76,9 +76,10 @@ sar_ema_strategy_config = {
 
 # sar+emax 策略
 sar_emax_strategy_config = {
-    'ema_period':20,
+    'ema_period':60,
     'sar_acceleration':0.02,
-    'sar_maximum':0.2
+    'sar_maximum':0.2,
+    'trade_direction': 'both'  # 交易方向，可选值: 'both', 'only_long', 'only_short'
 }
 
 # sar策略
@@ -125,7 +126,7 @@ coin_selector_strategy_config = {
     'selection_mode': 'trend',  # 选币模式: trend(趋势), oscillation(震荡), comprehensive(综合)
     'num_coins': 5,  # 要选择的币种数量
     'min_volume_usd': 5000000,  # 最小24h交易量(美元)
-    'update_interval': 1,  # 选币更新间隔(小时)
+    'update_interval': 0.25,  # 选币更新间隔(小时)
     'loop_mode': True,  # 是否循环运行选币策略
     'schedule_hours': [],  # 选币策略运行的固定时间点(小时),例如[9,12,15,18,21]表示这几个整点运行,空列表表示按update_interval间隔运行
 

@@ -53,6 +53,7 @@ class SarEmaXStrategy(StrategyTemplate):
         self.ema_period = config.get('ema_period', 20)  # EMA周期，默认20
         self.sar_acceleration = config.get('sar_acceleration', 0.02)  # SAR加速因子，默认0.02
         self.sar_maximum = config.get('sar_maximum', 0.2)  # SAR最大步长，默认0.2
+        self.trade_direction = config.get('trade_direction', 'both')  # 交易方向，可选值: 'both', 'only_long', 'only_short'
 
         # 记录策略信息
         self.logger.info(f"初始化SAR+EMA20策略，EMA周期: {self.ema_period}, "
@@ -191,23 +192,41 @@ class SarEmaXStrategy(StrategyTemplate):
         # 判断趋势翻转情况和EMA 20趋势
         price_above_ema = prev['close'] > prev['ema20']  # 价格是否在EMA 20上方
 
+        # 判断趋势翻转情况和EMA 20趋势
+        price_below_ema = prev['close'] < prev['ema20']  # 价格是否在EMA 20上方
+
         # SAR从上方翻转到下方 (做多信号) - 通过sar_is_uptrend由False变为True判断
         sar_buy_signal = prev['sar_is_uptrend'] and not prev_prev['sar_is_uptrend']
 
         # SAR从下方翻转到上方 (平多信号) - 通过sar_is_uptrend由True变为False判断
         sar_sell_signal = not prev['sar_is_uptrend'] and prev_prev['sar_is_uptrend']
 
-        # 仅做多策略
-        # 买入条件：价格在EMA 20上方，且SAR从上方翻转到下方
-        if sar_buy_signal and price_above_ema:
-            self.logger.info(f"价格在EMA 20上方，SAR从上方翻转到下方，生成买入信号，"
-                                 f"前收盘价:{prev['close']}, EMA20:{prev['ema20']}, SAR:{prev['sar']}")
-            return OPEN_LONG
+        # 价格在EMA上方
+        if price_above_ema:
+            # 仅做多策略
+            # 买入条件：价格在EMA 20上方，且SAR从上方翻转到下方
+            if sar_buy_signal and price_above_ema:
+                self.logger.info(f"价格在EMA 20上方，SAR从上方翻转到下方，生成买入信号，"
+                                     f"前收盘价:{prev['close']}, EMA20:{prev['ema20']}, SAR:{prev['sar']}")
+                return OPEN_LONG
 
-        # 卖出条件：SAR从下方翻转到上方
-        elif sar_sell_signal:
-            self.logger.info(f"SAR从下方翻转到上方，生成卖出信号，前SAR:{prev['sar']}")
-            return CLOSE_LONG
+            # 卖出条件：SAR从下方翻转到上方
+            elif sar_sell_signal:
+                self.logger.info(f"SAR从下方翻转到上方，生成卖出信号，前SAR:{prev['sar']}")
+                return CLOSE_LONG
+        elif price_below_ema:
+            # 仅做多策略
+            # 买入条件：价格在EMA 20上方，且SAR从上方翻转到下方
+            if sar_sell_signal and price_below_ema:
+                self.logger.info(f"SAR从下方翻转到上方，生成卖出信号，前SAR:{prev['sar']}")
+                return OPEN_LONG
+
+            # 卖出条件：SAR从下方翻转到上方
+            elif sar_buy_signal:
+                self.logger.info(f"价格在EMA 下方方，SAR从上方翻转到下方，生成买入信号，"
+                                 f"前收盘价:{prev['close']}, EMA20:{prev['ema20']}, SAR:{prev['sar']}")
+                return CLOSE_LONG
+
 
 
 
