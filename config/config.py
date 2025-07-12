@@ -8,8 +8,8 @@ API密钥配置已移至api_keys.py文件
 
 # 交易配置（通用）
 trading_config = {
-    'account_alias':'量化机器人_1号', # 账户的昵称
-    'symbol': '1INCH-USDT-SWAP',  # 交易对
+    'account_alias':'量化机器人_主号', # 账户的昵称
+    'symbol': 'DEGEN-USDT-SWAP',  # 交易对
     'strategy': 'sar_emax_strategy',     # 策略名称 dc_strategy sar_emax_strategy sar_strategy ema_strategy
     'timeframe': '15m',         # K线时间周期
     'leverage': 1,              # 杠杆倍数
@@ -77,6 +77,13 @@ sar_ema_strategy_config = {
 # sar+emax 策略
 sar_emax_strategy_config = {
     'ema_period':30,
+    'ema_period5':5,
+    'ema_period10':10,
+    'ema_period20':20,
+    'ema_period30':30,
+    'ema_period60':60,
+    'ema_period120':120,
+    'ema_period240':240,
     'sar_acceleration':0.02,
     'sar_maximum':0.2,
     'trade_direction': 'both'  # 交易方向，可选值: 'both', 'only_long', 'only_short'
